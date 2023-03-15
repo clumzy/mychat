@@ -194,6 +194,8 @@ class Chatbot():
         """        
         self._speech_synthesizer.speak_text_async(text).get()
 
+
+
 if __name__ == "__main__":
     new_chat = Chatbot()
     new_chat.converse()
