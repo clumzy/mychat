@@ -2,14 +2,15 @@ import customtkinter
 
 import chatbot
 
+from time import sleep
+
 class PromptBox(customtkinter.CTkFrame):
-    def __init__(self, master, chatbot_instance, *args):
+    def __init__(self, master, *args):
         super().__init__(master, *args)
         super().__init__(master=master,*args)
         self.grid(row=1, column=0, columnspan=1, sticky="nsew")
         self.grid_rowconfigure((0,1),weight=1)
         self.grid_columnconfigure((0,1), weight=1)
-        self._chatbot = chatbot_instance
         self.prompt = customtkinter.CTkTextbox(master=self, corner_radius=10,)
         self.prompt.grid(row=0, column=0, rowspan = 2)
 
@@ -18,17 +19,23 @@ class PromptBox(customtkinter.CTkFrame):
         self.button1 = customtkinter.CTkButton(master=self, height=80, width=70, command=self.editor_callback, text="Editeur")
         self.button1.grid(row=1, column=1)
 
-    def send_callback():
-        pass
+    def send_callback(self):
+        msg = self.prompt.get(0.0,4096.4096)
+        self.prompt.delete(0.0,4096.4096)
+        self.update()
+        self.master.conversation_ui.add_user_message(msg)
+        self.master.conversation_ui.update()
+        self.master.conversation_ui._parent_canvas.yview_moveto('1.0')
+        self.master.chatbot.converse(msg, self)
 
-    def editor_callback():
+    def editor_callback(self):
         pass
-        
 
 class Message(customtkinter.CTkTextbox):
     def __init__(self, master, message, *args,):
         super().__init__(
             master=master,
+            height = 100,
             *args)
         self.insert("0.0", message)
         self.configure(state="disabled")
@@ -48,12 +55,11 @@ class UserMessage(Message):
             text_color="#111111")
 
 class Conversation(customtkinter.CTkScrollableFrame):
-    def __init__(self, master, chatbot_instance,*args,):
+    def __init__(self, master, *args,):
         super().__init__(master=master,*args)
         self.grid(row=0, column=0, columnspan=2, sticky="nsew")
         self.grid_rowconfigure(0,weight=1)
         self.grid_columnconfigure((0), weight=1)
-        self._chatbot = chatbot_instance
         self._message_boxes = []
 
     def add_assistant_message(self, message):
@@ -71,19 +77,15 @@ class Conversation(customtkinter.CTkScrollableFrame):
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-
         self.geometry("300x500")
         self.title("small example app")
         self.minsize(300, 500)
-
         # create 2x2 grid system
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure((0), weight=1)
-
         self.chatbot = chatbot.Chatbot()
-
-        self.conversation_ui = Conversation(master=self, chatbot_instance=self.chatbot)
-        self.chat_ui = PromptBox(master=self, chatbot_instance=self.chatbot)
+        self.conversation_ui = Conversation(master=self)
+        self.chat_ui = PromptBox(master=self)
 
 if __name__ == "__main__":
     app = App()
