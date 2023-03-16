@@ -11,12 +11,23 @@ class PromptBox(customtkinter.CTkFrame):
         self.grid(row=1, column=0, columnspan=1, sticky="nsew")
         self.grid_rowconfigure((0,1),weight=1)
         self.grid_columnconfigure((0,1), weight=1)
-        self.prompt = customtkinter.CTkTextbox(master=self, corner_radius=10,)
+        self.prompt = customtkinter.CTkTextbox(
+            master=self, 
+            corner_radius=10,)
         self.prompt.grid(row=0, column=0, rowspan = 2)
-
-        self.button = customtkinter.CTkButton(master=self, height=80, width=70, command=self.send_callback, text="Envoyer")
+        self.button = customtkinter.CTkButton(
+            master=self, 
+            height=80, 
+            width=70, 
+            command=self.send_callback, 
+            text="Envoyer")
         self.button.grid(row=0, column=1)
-        self.button1 = customtkinter.CTkButton(master=self, height=80, width=70, command=self.editor_callback, text="Editeur")
+        self.button1 = customtkinter.CTkButton(
+            master=self, 
+            height=80, 
+            width=70, 
+            command=self.editor_callback, 
+            text="Editeur")
         self.button1.grid(row=1, column=1)
         self.prompt.bind("<Control-Return>",self.send_callback) 
 
@@ -37,6 +48,8 @@ class Message(customtkinter.CTkTextbox):
         super().__init__(
             master=master,
             height = 100,
+            wrap = "word",
+            corner_radius = 10,
             *args)
         self.insert("0.0", message)
         self.configure(state="disabled")
