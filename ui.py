@@ -18,8 +18,9 @@ class PromptBox(customtkinter.CTkFrame):
         self.button.grid(row=0, column=1)
         self.button1 = customtkinter.CTkButton(master=self, height=80, width=70, command=self.editor_callback, text="Editeur")
         self.button1.grid(row=1, column=1)
+        self.prompt.bind("<Control-Return>",self.send_callback) 
 
-    def send_callback(self):
+    def send_callback(self, *args):
         msg = self.prompt.get(0.0,4096.4096)
         self.prompt.delete(0.0,4096.4096)
         self.update()
