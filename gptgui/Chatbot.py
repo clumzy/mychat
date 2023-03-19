@@ -2,7 +2,9 @@ import os
 import threading
 import openai
 
-from .PromptBox import PromptBox
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .PromptBox import PromptBox
 
 
 class Chatbot():
@@ -55,7 +57,7 @@ class Chatbot():
     #FONCTIONS HELPER
 
     #FONCTION THREADEE
-    def get_answer(self,prompt_box:PromptBox):
+    def get_answer(self,prompt_box:"PromptBox"):
         completion_package = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=self._messages,
@@ -63,11 +65,11 @@ class Chatbot():
         response = completion_package.choices[0].message.content # type: ignore
         print("Response got !")
         self.add_assistant_answer(response)
-        prompt_box.master.conversation_ui.add_assistant_message(response) # type: ignore
-        prompt_box.master.conversation_ui.update() # type: ignore
-        prompt_box.master.conversation_ui._parent_canvas.yview_moveto('1.0') # type: ignore
+        prompt_box.master.conversation_ui.add_assistant_message(response)
+        prompt_box.master.conversation_ui.update()
+        prompt_box.master.conversation_ui._parent_canvas.yview_moveto(1.0)
 
-    def converse(self, prompt, prompt_box:PromptBox):
+    def converse(self, prompt, prompt_box:"PromptBox"):
         self.add_user_prompt(prompt=prompt)
         print("Getting response...")
         answer_thread = threading.Thread(target=self.get_answer, args=(prompt_box,))

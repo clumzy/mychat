@@ -1,8 +1,13 @@
 import customtkinter
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .App import App
+
 class PromptBox(customtkinter.CTkFrame):
-    def __init__(self, master, *args):
-        super().__init__(master=master,*args)
+    def __init__(self, master:"App", *args):
+        self.master:"App" = master
+        super().__init__(master=self.master,*args)
         self.grid(row=1, column=0, sticky="nsew")
         self.grid_rowconfigure((0,1),weight=1) # type: ignore
         self.grid_columnconfigure((0), weight=1)
@@ -12,7 +17,7 @@ class PromptBox(customtkinter.CTkFrame):
             master=self, 
             height=80, 
             width=70, 
-            command=self.callback_send,  # type: ignore
+            command=self.callback_send, # type: ignore
             text="Envoyer")
         self.button.grid(
             row=0, 
@@ -43,7 +48,7 @@ class PromptBox(customtkinter.CTkFrame):
             sticky = "ew",
             padx = (5,0),
             pady = (0,5))
-        self.prompt.bind("<Control-Return>",self.callback_send) 
+        self.prompt.bind("<Control-Return>",self.callback_send)
 
     def callback_send(self, *args):
         msg = self.prompt.get(0.0,4096.4096)
@@ -51,10 +56,10 @@ class PromptBox(customtkinter.CTkFrame):
         if msg != "":
             self.prompt.delete(0.0,4096.4096)
             self.update()
-            self.master.conversation_ui.add_user_message(msg) # type: ignore
-            self.master.conversation_ui.update() # type: ignore
-            self.master.conversation_ui._parent_canvas.yview_moveto('1.0') # type: ignore
-            self.master.chatbot.converse(msg, self) # type: ignore
+            self.master.conversation_ui.add_user_message(msg)
+            self.master.conversation_ui.update()
+            self.master.conversation_ui._parent_canvas.yview_moveto(1.0)
+            self.master.chatbot.converse(msg, self)
         return 'break' #POUR EVITER QUE LE BOUTTON ENTREE SAUTE LA LIGNE
 
     def editor_callback(self):
