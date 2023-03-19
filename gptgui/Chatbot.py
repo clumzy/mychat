@@ -1,15 +1,9 @@
 import os
-
-import openai
-import azure.cognitiveservices.speech as speechsdk
-
-import winsound
-
-import easygui
-
-import pyperclip
-
 import threading
+import openai
+
+from .PromptBox import PromptBox
+
 
 class Chatbot():
     def __init__(self, *args,):
@@ -19,7 +13,7 @@ class Chatbot():
         self._region = "francecentral"
         self._has_ended = False
         #ELEMENTS DE CONTEXTE DE LA DISCUSSION
-        self._system_prompt_loc = os.path.join("D:\George\Documents\Envs\mychat\prompting")
+        self._system_prompt_loc = os.path.join("D:\\George\\Documents\\Envs\\mychat\\prompting")
         if os.path.exists(os.path.join(self._system_prompt_loc, "sysprompt.txt")):
             with open(os.path.join(self._system_prompt_loc, "sysprompt.txt"), 'r') as f:
                 self._system_prompt = f.read()
@@ -31,7 +25,7 @@ class Chatbot():
 
         #FENETRE
         self._message_box = None
-    
+
     #FONCTIONS ATTRIBUS
     @property
     def user_messages(self):
@@ -59,32 +53,22 @@ class Chatbot():
         self._message_box = frame
 
     #FONCTIONS HELPER
-    def edit_system_prompt(self) -> None:
-        self._set_system_promp(
-            easygui.textbox(
-                msg = "Veuillez rentrer le prompt système initial.",
-                title = "System Prompt",
-                text=self._system_prompt
-            ))
-        with open(os.path.join(self._system_prompt_loc, "sysprompt.txt"), "w") as f:
-            f.write(self._system_prompt)
 
     #FONCTION THREADEE
-    def get_answer(self,prompt_box):
+    def get_answer(self,prompt_box:PromptBox):
         completion_package = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=self._messages,
                 api_key=self._openai_key)
-        response = completion_package.choices[0].message.content
+        response = completion_package.choices[0].message.content # type: ignore
+        print("Response got !")
         self.add_assistant_answer(response)
-        prompt_box.master.conversation_ui.add_assistant_message(response)
-        prompt_box.master.conversation_ui.update()
-        prompt_box.master.conversation_ui._parent_canvas.yview_moveto('1.0')
+        prompt_box.master.conversation_ui.add_assistant_message(response) # type: ignore
+        prompt_box.master.conversation_ui.update() # type: ignore
+        prompt_box.master.conversation_ui._parent_canvas.yview_moveto('1.0') # type: ignore
 
-    def converse(self, prompt, prompt_box):
+    def converse(self, prompt, prompt_box:PromptBox):
         self.add_user_prompt(prompt=prompt)
+        print("Getting response...")
         answer_thread = threading.Thread(target=self.get_answer, args=(prompt_box,))
         answer_thread.start()
-
-if __name__ == "__main__":
-    print("Déso c'est un module")
