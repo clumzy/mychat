@@ -69,6 +69,7 @@ class Chatbot():
         with open(os.path.join(self._system_prompt_loc, "sysprompt.txt"), "w") as f:
             f.write(self._system_prompt)
 
+    #FONCTION THREADEE
     def get_answer(self,prompt_box):
         completion_package = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",

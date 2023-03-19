@@ -5,71 +5,96 @@ import chatbot
 from time import sleep
 
 class PromptBox(customtkinter.CTkFrame):
-    def __init__(self, master, *args):
-        super().__init__(master, *args)
+    def __init__(self, master:customtkinter.CTk, *args):
         super().__init__(master=master,*args)
-        self.grid(row=1, column=0, columnspan=1, sticky="nsew")
+        self.grid(row=1, column=0, sticky="nsew")
         self.grid_rowconfigure((0,1),weight=1)
-        self.grid_columnconfigure((0,1), weight=1)
-        self.prompt = customtkinter.CTkTextbox(
-            master=self, 
-            corner_radius=10,)
-        self.prompt.grid(row=0, column=0, rowspan = 2)
+        self.grid_columnconfigure((0), weight=1)
+        self.grid_columnconfigure((1), weight=0)
+        #ENVOYER
         self.button = customtkinter.CTkButton(
             master=self, 
             height=80, 
             width=70, 
-            command=self.send_callback, 
+            command=self.callback_send, 
             text="Envoyer")
-        self.button.grid(row=0, column=1)
+        self.button.grid(
+            row=0, 
+            column=1,
+            sticky = "ne",
+            padx = (5,5))
+        #COMMAND
         self.button1 = customtkinter.CTkButton(
             master=self, 
-            height=80, 
             width=70, 
             command=self.editor_callback, 
-            text="Editeur")
-        self.button1.grid(row=1, column=1)
-        self.prompt.bind("<Control-Return>",self.send_callback) 
+            text="Editeur",)
+        self.button1.grid(
+            row=1, 
+            column=1,
+            sticky = "ne",
+            padx = (5,5),
+            pady = (0,5))
+        #PROMPTBOX
+        self.prompt = customtkinter.CTkTextbox(
+            master=self, 
+            corner_radius=10,
+            wrap = "word")
+        self.prompt.grid(
+            row=0, 
+            column=0, 
+            rowspan = 2, 
+            sticky = "ew",
+            padx = (5,0),
+            pady = (0,5))
+        self.prompt.bind("<Control-Return>",self.callback_send) 
 
-    def send_callback(self, *args):
+    def callback_send(self, *args):
         msg = self.prompt.get(0.0,4096.4096)
-        self.prompt.delete(0.0,4096.4096)
-        self.update()
-        self.master.conversation_ui.add_user_message(msg)
-        self.master.conversation_ui.update()
-        self.master.conversation_ui._parent_canvas.yview_moveto('1.0')
-        self.master.chatbot.converse(msg, self)
+        if msg[-1] == "\n": msg = msg[:-1]
+        if msg != "":
+            self.prompt.delete(0.0,4096.4096)
+            self.update()
+            self.master.conversation_ui.add_user_message(msg)
+            self.master.conversation_ui.update()
+            self.master.conversation_ui._parent_canvas.yview_moveto('1.0')
+            self.master.chatbot.converse(msg, self)
+        return 'break' #POUR EVITER QUE LE BOUTTON ENTREE SAUTE LA LIGNE
 
     def editor_callback(self):
         pass
 
-class Message(customtkinter.CTkTextbox):
-    def __init__(self, master, message, *args,):
+class Message(customtkinter.CTkLabel):
+    def __init__(self, master:customtkinter.CTkScrollableFrame, text:str, *args,):
         super().__init__(
             master=master,
-            height = 100,
-            wrap = "word",
+            text = text,
             corner_radius = 10,
+            justify = "left",
+            anchor="w",
             *args)
-        self.insert("0.0", message)
-        self.configure(state="disabled")
+        self.bind(
+            '<Configure>', 
+            lambda e: self.configure(
+                wraplength=self.winfo_width()-15))
         
 class AssistantMessage(Message):
-    def __init__(self, master, message,*args,):
-        super().__init__(master=master, message=message, *args)
+    def __init__(self, master:customtkinter.CTkScrollableFrame, text:str,*args,):
+        super().__init__(master=master, text=text, *args)
         self.configure(
             fg_color="#eeeeee",
-            text_color="#111111")
+            text_color="#111111",)
+            
 
 class UserMessage(Message):
-    def __init__(self, master, message,*args,):
-        super().__init__(master=master, message=message, * args)
+    def __init__(self, master:customtkinter.CTkScrollableFrame, text:str,*args,):
+        super().__init__(master=master, text=text, * args)
         self.configure(
             fg_color="#eeeebb",
             text_color="#111111")
 
 class Conversation(customtkinter.CTkScrollableFrame):
-    def __init__(self, master, *args,):
+    def __init__(self, master:customtkinter.CTk, *args,):
         super().__init__(master=master,*args)
         self.grid(row=0, column=0, columnspan=2, sticky="nsew")
         self.grid_rowconfigure(0,weight=1)
@@ -79,20 +104,28 @@ class Conversation(customtkinter.CTkScrollableFrame):
     def add_assistant_message(self, message):
         ass_message = AssistantMessage(self, message)
         self._message_boxes.append(ass_message)
-        ass_message.grid(row=len(self._message_boxes), column=0, sticky="ew")
+        ass_message.grid(
+            row=len(self._message_boxes), 
+            column=0, 
+            sticky="ew",
+            padx = 5,
+            pady = 5)
 
     def add_user_message(self, message):
         user_message = UserMessage(self, message)
         self._message_boxes.append(user_message)
-        user_message.grid(row=len(self._message_boxes), column=0, sticky="ew")
-
-
+        user_message.grid(
+            row=len(self._message_boxes), 
+            column=0, 
+            sticky="ew",
+            padx = 5,
+            pady = 5,)
 
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         self.geometry("300x500")
-        self.title("small example app")
+        self.title("Custom GPT")
         self.minsize(300, 500)
         # create 2x2 grid system
         self.grid_rowconfigure(0, weight=1)
