@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from .App import App
 
 class PromptBox(customtkinter.CTkFrame):
-    def __init__(self, master:"App", *args):
+    def __init__(self, master, *args):
         self.master:"App" = master
         super().__init__(master=self.master,*args)
         self.grid(row=1, column=0, sticky="nsew")
@@ -56,10 +56,7 @@ class PromptBox(customtkinter.CTkFrame):
         if msg != "":
             self.prompt.delete(0.0,4096.4096)
             self.update()
-            self.master.conversation_ui.add_user_message(msg)
-            self.master.conversation_ui.update()
-            self.master.conversation_ui._parent_canvas.yview_moveto(1.0)
-            self.master.chatbot.converse(msg, self)
+            self.master.chatbot.converse(msg, self.master.conversation_ui)
         return 'break' #POUR EVITER QUE LE BOUTTON ENTREE SAUTE LA LIGNE
 
     def editor_callback(self):
