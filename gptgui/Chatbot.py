@@ -50,30 +50,13 @@ class Chatbot():
 
     def add_assistant_answer(self, answer:str)->None:
         self._messages.append({"role": "assistant", "content": answer})
-
-    def register_message_box(self,frame):
-        self._message_box = frame
-
     #FONCTIONS HELPER
 
     #FONCTION THREADEE QUI AGIT SUR 
-    def get_answer(self,conv_ui:"Conversation"):
+    def return_answer(self)->str:
         completion_package = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=self._messages,
                 api_key=self._openai_key)
         response = completion_package.choices[0].message.content # type: ignore
-        print("Response got !")
-        self.add_assistant_answer(response)
-        conv_ui.draw_assistant_message(response)
-        conv_ui.update()
-        conv_ui._parent_canvas.yview_moveto(1.0)
-
-    def converse(self, prompt, conv_ui:"Conversation"):
-        conv_ui.draw_user_message(prompt)
-        conv_ui.update()
-        conv_ui._parent_canvas.yview_moveto(1.0)
-        self.add_user_prompt(prompt=prompt)
-        print("Getting response...")
-        answer_thread = threading.Thread(target=self.get_answer, args=(conv_ui,))
-        answer_thread.start()
+        return response

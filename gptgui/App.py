@@ -2,6 +2,7 @@ import customtkinter
 from .Chatbot import Chatbot
 from .Conversation import Conversation
 from .PromptBox import PromptBox
+from .ChatInterface import ChatInterface
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -15,3 +16,4 @@ class App(customtkinter.CTk):
         self.chatbot:Chatbot = Chatbot()
         self.conversation_ui:Conversation = Conversation(master=self)
         self.chat_ui:PromptBox = PromptBox(master=self)
+        self.chat_interface:ChatInterface = ChatInterface(self.conversation_ui, self.chatbot)

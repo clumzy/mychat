@@ -3,6 +3,7 @@ import customtkinter
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .App import App
+    from .ChatInterface import ChatInterface
 
 class PromptBox(customtkinter.CTkFrame):
     def __init__(self, master, *args):
@@ -56,7 +57,8 @@ class PromptBox(customtkinter.CTkFrame):
         if msg != "":
             self.prompt.delete(0.0,4096.4096)
             self.update()
-            self.master.chatbot.converse(msg, self.master.conversation_ui)
+            self.master.chat_interface.push_message(msg)
+            self.master.chat_interface.pull_response()
         return 'break' #POUR EVITER QUE LE BOUTTON ENTREE SAUTE LA LIGNE
 
     def editor_callback(self):
