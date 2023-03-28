@@ -3,7 +3,6 @@ import customtkinter
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .App import App
-    from .ChatInterface import ChatInterface
 
 class PromptBox(customtkinter.CTkFrame):
     def __init__(self, master, *args):
@@ -16,7 +15,7 @@ class PromptBox(customtkinter.CTkFrame):
         #ENVOYER
         self.button = customtkinter.CTkButton(
             master=self, 
-            height=80, 
+            height=40, 
             width=70, 
             command=self.callback_send, # type: ignore
             text="Envoyer")
@@ -27,7 +26,8 @@ class PromptBox(customtkinter.CTkFrame):
             padx = (5,5))
         #COMMAND
         self.button1 = customtkinter.CTkButton(
-            master=self, 
+            master=self,
+            height=20, 
             width=70, 
             command=self.editor_callback, 
             text="Editeur",)

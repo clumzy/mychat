@@ -4,8 +4,7 @@ import openai
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .Conversation import Conversation
-
+    from .Conversation import Chat
 
 class Chatbot():
     def __init__(self, *args,):
@@ -60,3 +59,5 @@ class Chatbot():
                 api_key=self._openai_key)
         response = completion_package.choices[0].message.content # type: ignore
         return response
+    
+    

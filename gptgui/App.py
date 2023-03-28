@@ -1,6 +1,6 @@
 import customtkinter
 from .Chatbot import Chatbot
-from .Conversation import Conversation
+from .Conversation import Chat
 from .PromptBox import PromptBox
 from .ChatInterface import ChatInterface
 
@@ -14,6 +14,6 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure((0), weight=1)
         self.chatbot:Chatbot = Chatbot()
-        self.conversation_ui:Conversation = Conversation(master=self)
-        self.chat_ui:PromptBox = PromptBox(master=self)
-        self.chat_interface:ChatInterface = ChatInterface(self.conversation_ui, self.chatbot)
+        self.chat_ui:Chat = Chat(master=self)
+        self.prompt_ui:PromptBox = PromptBox(master=self)
+        self.chat_interface:ChatInterface = ChatInterface(self.chat_ui, self.chatbot)
