@@ -1,7 +1,11 @@
 import customtkinter
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .Chat import Chat
+
 class Message(customtkinter.CTkTextbox):
-    def __init__(self, master:customtkinter.CTkScrollableFrame, text:str, *args,):
+    def __init__(self, master:"Chat", text:str, *args,):
         super().__init__(
             master=master,
             wrap="word",
@@ -17,14 +21,14 @@ class Message(customtkinter.CTkTextbox):
         self.configure(height = 15 + self._lines*15)
 
 class AssistantMessage(Message):
-    def __init__(self, master:customtkinter.CTkScrollableFrame, text:str,*args,):
+    def __init__(self, master:"Chat", text:str,*args,):
         super().__init__(master=master, text=text, *args)
         self.configure(
             fg_color="#eeeeee",
             text_color="#111111",)
             
 class UserMessage(Message):
-    def __init__(self, master:customtkinter.CTkScrollableFrame, text:str,*args,):
+    def __init__(self, master:"Chat", text:str,*args,):
         super().__init__(master=master, text=text, * args)
         self.configure(
             fg_color="#eeeebb",

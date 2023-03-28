@@ -1,10 +1,5 @@
 import os
-import threading
 import openai
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from .Conversation import Chat
 
 class Chatbot():
     def __init__(self, *args,):
@@ -51,6 +46,9 @@ class Chatbot():
         self._messages.append({"role": "assistant", "content": answer})
     #FONCTIONS HELPER
 
+    def __str__(self) -> str:
+        return "\n".join([str(x["role"])+":"+str(x["content"]) for x in self._messages[1:]])
+
     #FONCTION THREADEE QUI AGIT SUR 
     def return_answer(self)->str:
         completion_package = openai.ChatCompletion.create(
@@ -59,5 +57,3 @@ class Chatbot():
                 api_key=self._openai_key)
         response = completion_package.choices[0].message.content # type: ignore
         return response
-    
-    

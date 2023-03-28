@@ -2,8 +2,12 @@ import customtkinter
 
 from .Message import AssistantMessage, UserMessage
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .App import App
+
 class Chat(customtkinter.CTkScrollableFrame):
-    def __init__(self, master:customtkinter.CTk, *args,):
+    def __init__(self, master:"App", *args,):
         super().__init__(master=master,*args)
         self.grid(row=0, column=0, columnspan=2, sticky="nsew")
         self.grid_rowconfigure(0,weight=1)

@@ -5,8 +5,8 @@ if TYPE_CHECKING:
     from .App import App
 
 class PromptBox(customtkinter.CTkFrame):
-    def __init__(self, master, *args):
-        self.master:"App" = master
+    def __init__(self, master:"App", *args):
+        self.master:App = master
         super().__init__(master=self.master,*args)
         self.grid(row=1, column=0, sticky="nsew")
         self.grid_rowconfigure((0,1),weight=1) # type: ignore
@@ -29,8 +29,8 @@ class PromptBox(customtkinter.CTkFrame):
             master=self,
             height=20, 
             width=70, 
-            command=self.editor_callback, 
-            text="Editeur",)
+            command=self.callback_editor, 
+            text="Résumé",)
         self.button1.grid(
             row=1, 
             column=1,
@@ -61,6 +61,7 @@ class PromptBox(customtkinter.CTkFrame):
             self.master.chat_interface.pull_response()
         return 'break' #POUR EVITER QUE LE BOUTTON ENTREE SAUTE LA LIGNE
 
-    def editor_callback(self):
-        pass
+    def callback_editor(self):
+        recap = str(self.master.chat_interface._chatbot)
+        print(recap)
     

@@ -1,16 +1,16 @@
-import os
 import threading
-import openai
 
-from .Conversation import Chat
-from .Chatbot import Chatbot
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .Chat import Chat
+    from .Chatbot import Chatbot
 
-class ChatInterface():
+class ChatbotInterface():
     def __init__(self, 
-                 chat:Chat, 
-                 chatbot:Chatbot):
-        self._chat:Chat = chat
-        self._chatbot:Chatbot = chatbot
+                 chat:"Chat", 
+                 chatbot:"Chatbot"):
+        self._chat:"Chat" = chat
+        self._chatbot:"Chatbot" = chatbot
     
     def push_message(self, message: str,) -> None:
         self._chat.draw_user_message(message)
