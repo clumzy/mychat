@@ -29,3 +29,5 @@ class Conversation(customtkinter.CTkScrollableFrame):
             sticky="ew",
             padx = 5,
             pady = 5,)
+        self.update()
+        print(self.winfo_height())
