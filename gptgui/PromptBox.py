@@ -7,7 +7,9 @@ if TYPE_CHECKING:
 class PromptBox(customtkinter.CTkFrame):
     def __init__(self, master:"App", *args):
         self.master:App = master
-        super().__init__(master=self.master,*args)
+        super().__init__(
+            master=self.master,
+            *args)
         self.grid(row=1, column=0, sticky="sew")
         self.grid_rowconfigure((0,1),weight=1) # type: ignore
         self.grid_columnconfigure((0), weight=1)
@@ -16,49 +18,53 @@ class PromptBox(customtkinter.CTkFrame):
         self.send_button = customtkinter.CTkButton(
             master=self, 
             height=40, 
-            width=70, 
+            width=80, 
             command=self.callback_send, # type: ignore
             text="Envoyer")
         self.send_button.grid(
             row=0, 
             column=1,
             columnspan = 2,
-            sticky = "ne",
+            sticky = "nwe",
             padx = (5,5))
         #SOUVENIR
         self.memory_button = customtkinter.CTkButton(
             master=self,
             height=20, 
-            width=70, 
+            width=80, 
             command=self.callback_editor, 
             text="Résumé",)
         self.memory_button.grid(
             row=1, 
             column=1,
             columnspan=2,
-            sticky = "se",
+            sticky = "swe",
             padx = (5,5),
             pady = (0,5))
         #NOUVELLE CONV
         self.add_conv_button = customtkinter.CTkButton(
             master=self,
             height=20, 
-            width=70, 
+            width=35, 
             command=self.callback_newtab, 
-            text="+",)
+            text="+",
+            fg_color="#54A75E",
+            hover_color="#3A7641")
         self.add_conv_button.grid(
             row=2, 
             column=1,
-            sticky = "se",
+            sticky = "sw",
             padx = (5,5),
             pady = (0,5))
         #SUPPRIMER CONV
         self.delete_button = customtkinter.CTkButton(
             master=self,
             height=20, 
-            width=70, 
-            command=self.callback_newtab, 
-            text="X",)
+            width=35, 
+            command=self.callback_deltab, 
+            text="X",
+            fg_color="#B36262",
+            hover_color="#874B4B")
         self.delete_button.grid(
             row=2, 
             column=2,
@@ -69,7 +75,8 @@ class PromptBox(customtkinter.CTkFrame):
         self.prompt = customtkinter.CTkTextbox(
             master=self, 
             corner_radius=10,
-            wrap = "word")
+            wrap = "word",
+            height=120)
         self.prompt.grid(
             row=0, 
             column=0, 
@@ -96,4 +103,6 @@ class PromptBox(customtkinter.CTkFrame):
     def callback_newtab(self):
         self.master.tabs_ui.create_chat()
 
+    def callback_deltab(self,):
+        self.master.tabs_ui.delete_chat()
     

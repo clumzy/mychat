@@ -1,4 +1,6 @@
 import customtkinter
+from tkextrafont import Font
+
 from .Tabs import Tabs
 from .PromptBox import PromptBox
 
@@ -11,5 +13,5 @@ class App(customtkinter.CTk):
         # create 2x2 grid system
         self.grid_rowconfigure((0), weight=1)
         self.grid_columnconfigure(0, weight=1)
-        self.tabs_ui:Tabs = Tabs(master=self)
+        self.tabs_ui:Tabs = Tabs(master=self,)
         self.prompt_ui:PromptBox = PromptBox(master=self)

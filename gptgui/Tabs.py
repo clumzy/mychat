@@ -24,12 +24,23 @@ class Tabs(customtkinter.CTkTabview):
         return len(self._tabs)
 
     def create_chat(self, goto=True):
-        tab_name = str(self.num_tabs + 1)
-        print(tab_name)
+        if self.num_tabs == 0:
+            tab_name = "Default"
+        else:
+            tab_name = None
+            while tab_name == None or tab_name == '':
+                name_dialog = customtkinter.CTkInputDialog(
+                    text = "Nom du nouveau chat :",
+                    title = "Nouveau chat")
+                tab_name = name_dialog.get_input()
+                if tab_name in self._tabs.keys(): tab_name = None
         self.add(tab_name)
         chat = Chat(
             master=self.tab(tab_name),
             chatbot=Chatbot())
         self._tabs[tab_name] = chat
         if goto: self.set(tab_name)
-        
+
+    def delete_chat(self):
+        self._tabs.pop(self.get())
+        self.delete(self.get())

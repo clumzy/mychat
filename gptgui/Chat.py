@@ -53,10 +53,10 @@ class Chat(customtkinter.CTkScrollableFrame):
 
     def pull_response(self):
         print("Getting response...")
-        answer_thread = threading.Thread(target=self.thread_pull_response, args=())
+        answer_thread = threading.Thread(target=self._thread_pull_response, args=())
         answer_thread.start()
 
-    def thread_pull_response(self, ):
+    def _thread_pull_response(self, ):
         response = self._chatbot.return_answer()
         print("Response got !")
         self._chatbot.add_assistant_answer(response)
