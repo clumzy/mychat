@@ -8,33 +8,61 @@ class PromptBox(customtkinter.CTkFrame):
     def __init__(self, master:"App", *args):
         self.master:App = master
         super().__init__(master=self.master,*args)
-        self.grid(row=1, column=0, sticky="nsew")
+        self.grid(row=1, column=0, sticky="sew")
         self.grid_rowconfigure((0,1),weight=1) # type: ignore
         self.grid_columnconfigure((0), weight=1)
         self.grid_columnconfigure((1), weight=0)
         #ENVOYER
-        self.button = customtkinter.CTkButton(
+        self.send_button = customtkinter.CTkButton(
             master=self, 
             height=40, 
             width=70, 
             command=self.callback_send, # type: ignore
             text="Envoyer")
-        self.button.grid(
+        self.send_button.grid(
             row=0, 
             column=1,
+            columnspan = 2,
             sticky = "ne",
             padx = (5,5))
-        #COMMAND
-        self.button1 = customtkinter.CTkButton(
+        #SOUVENIR
+        self.memory_button = customtkinter.CTkButton(
             master=self,
             height=20, 
             width=70, 
             command=self.callback_editor, 
             text="Résumé",)
-        self.button1.grid(
+        self.memory_button.grid(
             row=1, 
             column=1,
-            sticky = "ne",
+            columnspan=2,
+            sticky = "se",
+            padx = (5,5),
+            pady = (0,5))
+        #NOUVELLE CONV
+        self.add_conv_button = customtkinter.CTkButton(
+            master=self,
+            height=20, 
+            width=70, 
+            command=self.callback_newtab, 
+            text="+",)
+        self.add_conv_button.grid(
+            row=2, 
+            column=1,
+            sticky = "se",
+            padx = (5,5),
+            pady = (0,5))
+        #SUPPRIMER CONV
+        self.delete_button = customtkinter.CTkButton(
+            master=self,
+            height=20, 
+            width=70, 
+            command=self.callback_newtab, 
+            text="X",)
+        self.delete_button.grid(
+            row=2, 
+            column=2,
+            sticky = "se",
             padx = (5,5),
             pady = (0,5))
         #PROMPTBOX
@@ -45,7 +73,7 @@ class PromptBox(customtkinter.CTkFrame):
         self.prompt.grid(
             row=0, 
             column=0, 
-            rowspan = 2, 
+            rowspan = 3, 
             sticky = "ew",
             padx = (5,0),
             pady = (0,5))
@@ -57,11 +85,15 @@ class PromptBox(customtkinter.CTkFrame):
         if msg != "":
             self.prompt.delete(0.0,4096.4096)
             self.update()
-            self.master.chat_interface.push_message(msg)
-            self.master.chat_interface.pull_response()
+            self.master.tabs_ui.current_tab.push_message(msg)
+            self.master.tabs_ui.current_tab.pull_response()
         return 'break' #POUR EVITER QUE LE BOUTTON ENTREE SAUTE LA LIGNE
 
     def callback_editor(self):
-        recap = str(self.master.chat_interface._chatbot)
+        recap = str(self.master.tabs_ui.current_tab._chatbot)
         print(recap)
+
+    def callback_newtab(self):
+        self.master.tabs_ui.create_chat()
+
     
