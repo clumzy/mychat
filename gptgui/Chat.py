@@ -5,17 +5,12 @@ import threading
 from .Message import AssistantMessage, UserMessage
 from .Chatbot import Chatbot
 
-
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from .Tabs import Tabs
-
 class Chat(customtkinter.CTkScrollableFrame):
     def __init__(
             self, 
             master:customtkinter.CTkFrame,
-            chatbot:Chatbot, 
+            chatbot:Chatbot,
+            button_callback: customtkinter.CTkButton, 
             *args,):
         super().__init__(master=master,*args)
         self._master = master
@@ -23,7 +18,10 @@ class Chat(customtkinter.CTkScrollableFrame):
         self._master.grid_columnconfigure((0), weight=1)
         self._master.grid_rowconfigure((0), weight=1)
         self._message_boxes = []
-        self._chatbot:Chatbot = chatbot
+        self.chatbot:Chatbot = chatbot
+        self._button_callback = button_callback
+        self._token_use = 0
+        self.bind("<Visibility>", self._update_button_on_visibility)
 
     def _draw_message(self, text:str, assistant=False):
         if assistant: message = AssistantMessage(self, text)
@@ -35,9 +33,7 @@ class Chat(customtkinter.CTkScrollableFrame):
             sticky="nsew",
             padx = 5,
             pady = 5)
-        
-        self.grid_columnconfigure(0, weight=2)
-        #print(message.winfo_height())
+        self.grid_columnconfigure(0, weight=1)
 
     def draw_assistant_message(self, message:str):
         self._draw_message(message, assistant=True)
@@ -49,7 +45,8 @@ class Chat(customtkinter.CTkScrollableFrame):
         self.draw_user_message(message)
         self.update()
         self._parent_canvas.yview_moveto(1.0)
-        self._chatbot.add_user_prompt(prompt=message)
+        self.chatbot.add_user_prompt(prompt=message)
+        self._update_token_use(update_button=True)
 
     def pull_response(self):
         print("Getting response...")
@@ -57,10 +54,36 @@ class Chat(customtkinter.CTkScrollableFrame):
         answer_thread.start()
 
     def _thread_pull_response(self, ):
-        response = self._chatbot.return_answer()
+        response = self.chatbot.return_answer()
         print("Response got !")
-        self._chatbot.add_assistant_answer(response)
+        self.chatbot.add_assistant_answer(response)
         self.draw_assistant_message(response)
         self.update()
         self._parent_canvas.yview_moveto(1.0)
-        print(self._chatbot.num_tokens_from_messages())
+        self._update_token_use(update_button=True)
+
+    def recap_chat(self,):
+        print("Getting recap...")
+        recap_thread = threading.Thread(target=self._thread_recap_chat, args=())
+        recap_thread.start()
+    
+    def _thread_recap_chat(self, ):
+        response = self.chatbot.return_recap()
+        print("Recap got !")
+        print(response)
+
+    # CALLBACK POUR LE CHANGEMENT D'ONGLET
+    def _update_button_on_visibility(self, event):
+        self._button_callback.configure(
+            text = str(self._token_use) + "/4095")
+            
+
+    def _update_token_use(self, update_button = False):
+        token_thread = threading.Thread(target=self._thread_update_token_use, args=[update_button])
+        token_thread.start()
+
+    def _thread_update_token_use(self, update_button:bool):
+        self._token_use = self.chatbot.num_tokens_from_messages()
+        if update_button and self.winfo_viewable() == 1:
+            self._button_callback.configure(
+                text = str(self._token_use) + "/4095")

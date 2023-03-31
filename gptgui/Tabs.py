@@ -1,7 +1,7 @@
 import customtkinter
 
 from .Chat import Chat
-from .Chatbot import Chatbot
+from.Chatbot import Chatbot
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -10,9 +10,11 @@ if TYPE_CHECKING:
 class Tabs(customtkinter.CTkTabview):
     def __init__(self, master:"App", **kwargs):
         super().__init__(master, **kwargs)
-        self._tabs = {}
+        self.master:"App" = master
+        self._tabs:dict[str,Chat] = {}
         self.grid(row=0, column=0, columnspan=1, sticky="nsew")
         self.grid_columnconfigure(0, weight=1)
+        self._token_button = self.master.prompt_ui.token_button
         self.create_chat()
 
     @property
@@ -35,12 +37,13 @@ class Tabs(customtkinter.CTkTabview):
                 tab_name = name_dialog.get_input()
                 if tab_name in self._tabs.keys(): tab_name = None
         self.add(tab_name)
-        chat = Chat(
+        self._tabs[tab_name] = Chat(
             master=self.tab(tab_name),
-            chatbot=Chatbot())
-        self._tabs[tab_name] = chat
+            chatbot=Chatbot(),
+            button_callback = self._token_button)
         if goto: self.set(tab_name)
 
     def delete_chat(self):
-        self._tabs.pop(self.get())
+        old_tab = self._tabs.pop(self.get())
         self.delete(self.get())
+        old_tab.destroy()

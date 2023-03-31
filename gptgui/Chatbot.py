@@ -48,18 +48,28 @@ class Chatbot():
     #FONCTIONS HELPER
 
     def __str__(self) -> str:
-        return "\n".join([str(x["role"])+":"+str(x["content"]) for x in self._messages[1:]])
+        return "\n".join([str(x["role"])+" : "+str(x["content"]) for x in self._messages[1:]])
 
-    #FONCTION THREADEE QUI AGIT SUR 
-    def return_answer(self)->str:
+    #FONCTION POUR RECUPERER UN RESUME DU TEXTE
+    def return_recap(self)->str:
+        prompt = "Résume moi en 3 phrases synthétiques et précises le contenu de cet échange, du point de vue de George qui résume à Jeannette.\n"
+        package = [{
+            "role":"user", 
+            "content": prompt+str(self)}]
+        return self.return_answer(package)
+        
+    #FONCTION QUI RECUPERE LA COMPLETION CHATGPT
+    def return_answer(self, messages=None)->str:
+        if messages == None:message_list = self._messages
+        else: message_list = messages
         completion_package = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
-                messages=self._messages,
+                messages=message_list,
                 api_key=self._openai_key)
         response = completion_package.choices[0].message.content # type: ignore
         return response
     
-    def num_tokens_from_messages(self):
+    def num_tokens_from_messages(self, messages=None)->int:
         """Returns the number of tokens used by a list of messages."""
         model = "gpt-3.5-turbo-0301"
         try:
@@ -68,7 +78,9 @@ class Chatbot():
             encoding = tiktoken.get_encoding("cl100k_base")
         if model == "gpt-3.5-turbo-0301":  # note: future models may deviate from this
             num_tokens = 0
-            for message in self._messages:
+            if messages == None: message_list = self._messages
+            else: message_list = messages
+            for message in message_list:
                 num_tokens += 4  # every message follows <im_start>{role/name}\n{content}<im_end>\n
                 for key, value in message.items():
                     num_tokens += len(encoding.encode(value))

@@ -14,6 +14,7 @@ class PromptBox(customtkinter.CTkFrame):
         self.grid_rowconfigure((0,1),weight=1) # type: ignore
         self.grid_columnconfigure((0), weight=1)
         self.grid_columnconfigure((1), weight=0)
+        self.grid_columnconfigure((2), weight=0)
         #ENVOYER
         self.send_button = customtkinter.CTkButton(
             master=self, 
@@ -27,15 +28,27 @@ class PromptBox(customtkinter.CTkFrame):
             columnspan = 2,
             sticky = "nwe",
             padx = (5,5))
+        #TOKENS
+        self.token_button = customtkinter.CTkButton(
+            master=self,
+            height=20,
+            width=80,
+            text = "0/4905")
+        self.token_button.grid(
+            row = 1,
+            column=1,
+            columnspan = 2,
+            sticky = "nwe",
+            padx = (5,5))
         #SOUVENIR
         self.memory_button = customtkinter.CTkButton(
             master=self,
             height=20, 
             width=80, 
-            command=self.callback_editor, 
+            command=self.callback_remember, 
             text="Résumé",)
         self.memory_button.grid(
-            row=1, 
+            row=2, 
             column=1,
             columnspan=2,
             sticky = "swe",
@@ -51,7 +64,7 @@ class PromptBox(customtkinter.CTkFrame):
             fg_color="#54A75E",
             hover_color="#3A7641")
         self.add_conv_button.grid(
-            row=2, 
+            row=3, 
             column=1,
             sticky = "sw",
             padx = (5,5),
@@ -66,7 +79,7 @@ class PromptBox(customtkinter.CTkFrame):
             fg_color="#B36262",
             hover_color="#874B4B")
         self.delete_button.grid(
-            row=2, 
+            row=3, 
             column=2,
             sticky = "se",
             padx = (5,5),
@@ -76,11 +89,11 @@ class PromptBox(customtkinter.CTkFrame):
             master=self, 
             corner_radius=10,
             wrap = "word",
-            height=120)
+            height=120,)
         self.prompt.grid(
             row=0, 
             column=0, 
-            rowspan = 3, 
+            rowspan = 4, 
             sticky = "ew",
             padx = (5,0),
             pady = (0,5))
@@ -96,9 +109,8 @@ class PromptBox(customtkinter.CTkFrame):
             self.master.tabs_ui.current_tab.pull_response()
         return 'break' #POUR EVITER QUE LE BOUTTON ENTREE SAUTE LA LIGNE
 
-    def callback_editor(self):
-        recap = str(self.master.tabs_ui.current_tab._chatbot)
-        print(recap)
+    def callback_remember(self):
+        self.master.tabs_ui.current_tab.recap_chat()
 
     def callback_newtab(self):
         self.master.tabs_ui.create_chat()
