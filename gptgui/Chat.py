@@ -22,6 +22,7 @@ class Chat(customtkinter.CTkScrollableFrame):
         self._button_callback = button_callback
         self._token_use = 0
         self.bind("<Visibility>", self._update_button_on_visibility)
+        self._thread_update_token_use(update_button=True)
 
     def _draw_message(self, text:str, assistant=False):
         if assistant: message = AssistantMessage(self, text)
@@ -77,7 +78,6 @@ class Chat(customtkinter.CTkScrollableFrame):
         self._button_callback.configure(
             text = str(self._token_use) + "/4095")
             
-
     def _update_token_use(self, update_button = False):
         token_thread = threading.Thread(target=self._thread_update_token_use, args=[update_button])
         token_thread.start()
