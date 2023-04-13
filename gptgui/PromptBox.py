@@ -89,7 +89,7 @@ class PromptBox(customtkinter.CTkFrame):
             master=self, 
             corner_radius=10,
             wrap = "word",
-            height=120,)
+            height=120)
         self.prompt.grid(
             row=0, 
             column=0, 
