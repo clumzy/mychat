@@ -1,4 +1,5 @@
 import customtkinter
+from platform import platform
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -18,7 +19,11 @@ class Message(customtkinter.CTkTextbox):
         
     def _resize(self, event):
         self._lines:int = self._textbox.count("1.0", "end", "displaylines")[0]
-        self.configure(height = 15 + self._lines*15)
+        if platform() == "Windows":
+            line_height = 15
+        else:
+            line_height = 16
+        self.configure(height = 15 + self._lines*line_height)
 
 class AssistantMessage(Message):
     def __init__(self, master:"Chat", text:str,*args,):

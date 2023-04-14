@@ -10,7 +10,7 @@ class Chatbot():
         self._region = "francecentral"
         self._has_ended = False
         #ELEMENTS DE CONTEXTE DE LA DISCUSSION
-        self._system_prompt_loc = os.path.join("D:\\George\\Documents\\Envs\\mychat\\prompting")
+        self._system_prompt_loc = os.path.join("prompting/")
         if os.path.exists(os.path.join(self._system_prompt_loc, "sysprompt.txt")):
             with open(os.path.join(self._system_prompt_loc, "sysprompt.txt"), 'r') as f:
                 self._system_prompt = f.read()
