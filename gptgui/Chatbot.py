@@ -75,7 +75,6 @@ class Chatbot():
         if not messages: messages = self._messages
         answer = self._chat(messages)
         self._add_assistant_answer(AIMessage(content=answer.content)) #type:ignore
-        print(answer)
         return answer.content
     
     def num_tokens_from_messages(self, messages=None)->int:
