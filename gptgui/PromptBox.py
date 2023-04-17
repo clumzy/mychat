@@ -28,18 +28,6 @@ class PromptBox(customtkinter.CTkFrame):
             columnspan = 2,
             sticky = "nwe",
             padx = (5,5))
-        #TOKENS
-        self.token_button = customtkinter.CTkButton(
-            master=self,
-            height=20,
-            width=80,
-            text = "0/4905")
-        self.token_button.grid(
-            row = 1,
-            column=1,
-            columnspan = 2,
-            sticky = "nwe",
-            padx = (5,5))
         #SOUVENIR
         self.memory_button = customtkinter.CTkButton(
             master=self,
@@ -84,7 +72,7 @@ class PromptBox(customtkinter.CTkFrame):
             sticky = "se",
             padx = (5,5),
             pady = (0,5))
-        #PROMPTBOX
+        #PROMPT
         self.prompt = customtkinter.CTkTextbox(
             master=self, 
             corner_radius=10,

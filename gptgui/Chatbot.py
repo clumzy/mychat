@@ -1,6 +1,15 @@
 import os
 import openai
-import tiktoken
+
+from langchain.chat_models import ChatOpenAI
+from langchain.agents import initialize_agent, Tool
+from langchain.agents import AgentType
+from langchain.tools import BaseTool
+from langchain.schema import (
+    AIMessage,
+    HumanMessage,
+    SystemMessage)
+from langchain.utilities import WikipediaAPIWrapper
 
 class Chatbot():
     def __init__(self, *args,):
@@ -8,86 +17,69 @@ class Chatbot():
         self._openai_key = "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"
         self._azure_speech_key = "b736e203fe004d99b5d92d2f2e68c5da"
         self._region = "francecentral"
-        self._has_ended = False
+        #LANGCHAIN CHAT
+        self._chat = ChatOpenAI(
+            temperature=0.7,
+            openai_api_key=self._openai_key,) #type:ignore
         #ELEMENTS DE CONTEXTE DE LA DISCUSSION
         self._system_prompt_loc = os.path.join("prompting/")
         if os.path.exists(os.path.join(self._system_prompt_loc, "sysprompt.txt")):
             with open(os.path.join(self._system_prompt_loc, "sysprompt.txt"), 'r') as f:
-                self._system_prompt = f.read()
+                system_prompt = f.read()
         else:
-            self._system_prompt = ""
+            system_prompt = ""
         #LE TABLEAU QUI CONTIENDRA LES MESSAGES DE LA DISCUSSION    
         self._messages = []
-        self._messages.append({"role": "system", "content" : self._system_prompt})
-
-        #FENETRE
-        self._message_box = None
+        #CONFIGURATION DU SYS PROMPT
+        self.set_system_prompt(system_prompt)
 
     #FONCTIONS ATTRIBUS
     @property
     def user_messages(self):
-        return [x["content"] for x in self._messages if x["role"] == "user"]
+        return [x.content for x in self._messages if type(x) == "human"]
 
     @property
     def assistant_messages(self):
-        return [x["content"] for x in self._messages if x["role"] == "assistant"]
+        return [x.content for x in self._messages if type(x) == "ai"]
 
     @property
     def all_messages(self):
-        return [x["content"] for x in self._messages if x["role"] != "system"]
+        return [x.content for x in self._messages if type(x) != "system"]
 
     #FONCTIONS GETSETADD
     def set_system_prompt(self, prompt:str)->None:
-        self._system_prompt = prompt
-
+        if len(self._messages) > 0: self._messages[0] = prompt
+        else: self._messages.append(
+            SystemMessage(content = prompt))
     def add_user_prompt(self, prompt:str)->None:
-        self._messages.append({"role": "user", "content": prompt})
-
-    def add_assistant_answer(self, answer:str)->None:
-        self._messages.append({"role": "assistant", "content": answer})
+        self._messages.append(
+            HumanMessage(content=prompt))
+    def _add_assistant_answer(self, answer:AIMessage)->None:
+        self._messages.append(
+            answer)
     #FONCTIONS HELPER
-
     def __str__(self) -> str:
         return "\n".join([str(x["role"])+" : "+str(x["content"]) for x in self._messages[1:]])
 
     #FONCTION POUR RECUPERER UN RESUME DU TEXTE
     def return_recap(self)->str:
-        prompt = "Résume moi en 3 phrases synthétiques et précises le contenu de cet échange, du point de vue de George qui résume à Jeannette.\n"
+        """prompt = "Résume moi en 3 phrases synthétiques et précises le contenu de cet échange, du point de vue de George qui résume à Jeannette.\n"
         package = [{
             "role":"user", 
             "content": prompt+str(self)}]
-        return self.return_answer(package)
+        return self.return_answer(package)"""
+        return "420"
         
     #FONCTION QUI RECUPERE LA COMPLETION CHATGPT
     def return_answer(self, messages=None)->str:
-        if messages == None:message_list = self._messages
-        else: message_list = messages
-        completion_package = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=message_list,
-                api_key=self._openai_key)
-        response = completion_package.choices[0].message.content # type: ignore
-        return response
+        if not messages: messages = self._messages
+        answer = self._chat(messages)
+        self._add_assistant_answer(AIMessage(content=answer.content)) #type:ignore
+        print(answer)
+        return answer.content
     
     def num_tokens_from_messages(self, messages=None)->int:
         """Returns the number of tokens used by a list of messages."""
-        model = "gpt-3.5-turbo-0301"
-        try:
-            encoding = tiktoken.encoding_for_model(model)
-        except KeyError:
-            encoding = tiktoken.get_encoding("cl100k_base")
-        if model == "gpt-3.5-turbo-0301":  # note: future models may deviate from this
-            num_tokens = 0
-            if messages == None: message_list = self._messages
-            else: message_list = messages
-            for message in message_list:
-                num_tokens += 4  # every message follows <im_start>{role/name}\n{content}<im_end>\n
-                for key, value in message.items():
-                    num_tokens += len(encoding.encode(value))
-                    if key == "name":  # if there's a name, the role is omitted
-                        num_tokens += -1  # role is always required and always 1 token
-            num_tokens += 2  # every reply is primed with <im_start>assistant
-            return num_tokens
-        else:
-            raise NotImplementedError(f"""num_tokens_from_messages() is not presently implemented for model {model}.
-        See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.""")
+        return 0
+    
+

@@ -14,7 +14,7 @@ class Tabs(customtkinter.CTkTabview):
         self._tabs:dict[str,Chat] = {}
         self.grid(row=0, column=0, columnspan=1, sticky="nsew")
         self.grid_columnconfigure(0, weight=1)
-        self._token_button = self.master.prompt_ui.token_button
+        self._token_button = self.master.prompt_ui.send_button
         self.create_chat()
 
     @property

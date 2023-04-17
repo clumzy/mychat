@@ -21,8 +21,9 @@ class Chat(customtkinter.CTkScrollableFrame):
         self.chatbot:Chatbot = chatbot
         self._button_callback = button_callback
         self._token_use = 0
-        self.bind("<Visibility>", self._update_button_on_visibility)
-        self._thread_update_token_use(update_button=True)
+        #CALLBACK POUR CHANGER L'AFFICHAGE DES TOKENS AU CHANGMENT D'ONGLET
+        self.bind("<Visibility>", self._update_token_use)
+        self._update_token_use(update_button=True)
 
     def _draw_message(self, text:str, assistant=False):
         if assistant: message = AssistantMessage(self, text)
@@ -57,7 +58,6 @@ class Chat(customtkinter.CTkScrollableFrame):
     def _thread_pull_response(self, ):
         response = self.chatbot.return_answer()
         print("Response got !")
-        self.chatbot.add_assistant_answer(response)
         self.draw_assistant_message(response)
         self.update()
         self._parent_canvas.yview_moveto(1.0)
@@ -74,11 +74,7 @@ class Chat(customtkinter.CTkScrollableFrame):
         print(response)
 
     # CALLBACK POUR LE CHANGEMENT D'ONGLET
-    def _update_button_on_visibility(self, event):
-        self._button_callback.configure(
-            text = str(self._token_use) + "/4095")
-            
-    def _update_token_use(self, update_button = False):
+    def _update_token_use(self, event = None, update_button = True):
         token_thread = threading.Thread(target=self._thread_update_token_use, args=[update_button])
         token_thread.start()
 
@@ -86,4 +82,4 @@ class Chat(customtkinter.CTkScrollableFrame):
         self._token_use = self.chatbot.num_tokens_from_messages()
         if update_button and self.winfo_viewable() == 1:
             self._button_callback.configure(
-                text = str(self._token_use) + "/4095")
+                text = str(4095 - self._token_use))
