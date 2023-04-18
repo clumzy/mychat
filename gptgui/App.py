@@ -1,5 +1,4 @@
 import customtkinter
-customtkinter.set_default_color_theme("dark-blue") 
 
 from .Tabs import Tabs
 from .PromptBox import PromptBox

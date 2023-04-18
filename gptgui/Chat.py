@@ -82,4 +82,4 @@ class Chat(customtkinter.CTkScrollableFrame):
         self._token_use = self.chatbot.num_tokens_from_messages()
         if update_button and self.winfo_viewable() == 1:
             self._button_callback.configure(
-                text = str(4095 - self._token_use))
+                text = str(4097 - self._token_use))
