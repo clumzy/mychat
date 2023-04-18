@@ -1,7 +1,7 @@
 import customtkinter
 
-from .Tabs import Tabs
-from .PromptBox import PromptBox
+from ui.Tabs import Tabs
+from ui.PromptBox import PromptBox
 
 class App(customtkinter.CTk):
     def __init__(self):

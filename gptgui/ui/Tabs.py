@@ -1,11 +1,11 @@
 import customtkinter
 
 from .Chat import Chat
-from.Chatbot import Chatbot
+from ai.Chatbot import Chatbot
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .App import App
+    from App import App
 
 class Tabs(customtkinter.CTkTabview):
     def __init__(self, master:"App", **kwargs):

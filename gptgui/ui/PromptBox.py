@@ -2,7 +2,7 @@ import customtkinter
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .App import App
+    from App import App
 
 class PromptBox(customtkinter.CTkFrame):
     def __init__(self, master:"App", *args):
