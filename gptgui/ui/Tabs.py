@@ -1,7 +1,7 @@
 import customtkinter
 
 from .Chat import Chat
-from ai.Chatbot import Chatbot
+from ..ai.Chatbot import Chatbot
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

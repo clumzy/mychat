@@ -3,7 +3,7 @@ import customtkinter
 import threading
 
 from .Message import AssistantMessage, UserMessage
-from ai.Chatbot import Chatbot
+from ..ai.Chatbot import Chatbot
 
 class Chat(customtkinter.CTkScrollableFrame):
     def __init__(
