@@ -21,27 +21,13 @@ class PromptBox(customtkinter.CTkFrame):
             height=40, 
             width=80, 
             command=self.callback_send, # type: ignore
-            text="Envoyer")
+            text="Send\n0")
         self.send_button.grid(
             row=0, 
             column=1,
             columnspan = 2,
             sticky = "nwe",
             padx = (5,5))
-        #SOUVENIR
-        self.memory_button = customtkinter.CTkButton(
-            master=self,
-            height=20, 
-            width=80, 
-            command=self.callback_remember, 
-            text="Résumé",)
-        self.memory_button.grid(
-            row=2, 
-            column=1,
-            columnspan=2,
-            sticky = "swe",
-            padx = (5,5),
-            pady = (0,5))
         #NOUVELLE CONV
         self.add_conv_button = customtkinter.CTkButton(
             master=self,
@@ -96,9 +82,6 @@ class PromptBox(customtkinter.CTkFrame):
             self.master.tabs_ui.current_tab.push_message(msg)
             self.master.tabs_ui.current_tab.pull_response()
         return 'break' #POUR EVITER QUE LE BOUTTON ENTREE SAUTE LA LIGNE
-
-    def callback_remember(self):
-        self.master.tabs_ui.current_tab.recap_chat()
 
     def callback_newtab(self):
         self.master.tabs_ui.create_chat()

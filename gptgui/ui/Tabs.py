@@ -39,7 +39,9 @@ class Tabs(customtkinter.CTkTabview):
         self.add(tab_name)
         self._tabs[tab_name] = Chat(
             master=self.tab(tab_name),
-            chatbot=Chatbot(),
+            chatbot=Chatbot(
+                sys_prompt="D:\\George\\Documents\\Envs\\mychat\\prompting\\sysprompt.txt"
+            ),
             button_callback = self._token_button)
         if goto: self.set(tab_name)
 
