@@ -8,7 +8,6 @@ class Chatbot():
             openai_key=None,
             *args,):
         #CLES API
-        print(os.environ)
         if openai_key is None:
             openai.api_key = os.environ.get("OPENAI_API_KEY")
         else: openai.api_key = openai_key
