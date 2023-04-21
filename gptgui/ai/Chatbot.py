@@ -7,6 +7,12 @@ class Chatbot():
             sys_prompt:str,
             openai_key=None,
             *args,):
+        """Un chatbot, qui peut interagir avec OpenAi
+
+        Args:
+            sys_prompt (str): L'emplacement du prompt system.
+            openai_key (str, optional): OpenAi key. Defaults to user env variable.
+        """
         #CLES API
         if openai_key is None:
             openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -45,9 +51,12 @@ class Chatbot():
     def add_user_prompt(self, prompt:str)->None:
         self._messages.append(
             {"role":"user", "content":f"{prompt}"})
-    def _add_assistant_answer(self, answer:str)->None:
+    def add_assistant_answer(self, answer:str)->None:
         self._messages.append(
             {"role":"assistant", "content":f"{answer}"})
+        
+    def get_messages(self):
+        return list(self._messages)
     #FONCTIONS HELPER
     def __str__(self) -> str:
         return "\n".join([str(x["role"])+" : "+str(x["content"]) for x in self._messages[1:]])
@@ -59,14 +68,10 @@ class Chatbot():
         chat = openai.ChatCompletion.create(
             model = "gpt-3.5-turbo",
             temperature=0.7,
-            messages = self._messages)
+            messages = messages)
         content = chat.choices[0].message.content #type:ignore
-        self._add_assistant_answer(content)
+        self.add_assistant_answer(content)
         self.token_use = chat.usage.total_tokens #type:ignore
         return content
-    
-    def num_tokens_from_messages(self, messages=None)->int:
-        """Returns the number of tokens used by a list of messages."""
-        return 0
     
 

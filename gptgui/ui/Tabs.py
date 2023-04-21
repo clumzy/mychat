@@ -1,7 +1,7 @@
 import customtkinter
 
 from .Chat import Chat
-from ..ai.Chatbot import Chatbot
+from ..ai.Pipe import WikiPipe
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -39,9 +39,7 @@ class Tabs(customtkinter.CTkTabview):
         self.add(tab_name)
         self._tabs[tab_name] = Chat(
             master=self.tab(tab_name),
-            chatbot=Chatbot(
-                sys_prompt="prompting/sysprompt.txt"
-            ),
+            pipe=WikiPipe(),
             button_callback = self._token_button)
         if goto: self.set(tab_name)
 

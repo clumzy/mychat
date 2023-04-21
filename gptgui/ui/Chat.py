@@ -3,13 +3,13 @@ import customtkinter
 import threading
 
 from .Message import AssistantMessage, UserMessage
-from ..ai.Chatbot import Chatbot
+from ..ai.Pipe import WikiPipe
 
 class Chat(customtkinter.CTkScrollableFrame):
     def __init__(
             self, 
             master:customtkinter.CTkFrame,
-            chatbot:Chatbot,
+            pipe:WikiPipe,
             button_callback: customtkinter.CTkButton, 
             *args,):
         super().__init__(master=master,*args)
@@ -18,7 +18,7 @@ class Chat(customtkinter.CTkScrollableFrame):
         self._master.grid_columnconfigure((0), weight=1)
         self._master.grid_rowconfigure((0), weight=1)
         self._message_boxes = []
-        self.chatbot:Chatbot = chatbot
+        self.pipe:WikiPipe = pipe
         self._button_callback = button_callback
         #CALLBACK POUR CHANGER L'AFFICHAGE DES TOKENS AU CHANGMENT D'ONGLET
         self.bind("<Visibility>", self._update_token_use)
@@ -45,14 +45,14 @@ class Chat(customtkinter.CTkScrollableFrame):
         self.draw_user_message(message)
         self.update()
         self._parent_canvas.yview_moveto(1.0)
-        self.chatbot.add_user_prompt(prompt=message)
+        self.pipe.add_user_prompt(prompt=message)
 
     def pull_response(self):
         answer_thread = threading.Thread(target=self._thread_pull_response, args=())
         answer_thread.start()
 
     def _thread_pull_response(self, ):
-        response = self.chatbot.return_answer()
+        response = self.pipe.return_answer()
         self.draw_assistant_message(response)
         self.update()
         self._parent_canvas.yview_moveto(1.0)
@@ -60,4 +60,4 @@ class Chat(customtkinter.CTkScrollableFrame):
 
     # CALLBACK POUR LE CHANGEMENT D'ONGLET
     def _update_token_use(self, event = None):
-        self._button_callback.configure(text=f"Send\n{self.chatbot.token_use}")
+        self._button_callback.configure(text=f"Send\n{self.pipe.token_use}")
