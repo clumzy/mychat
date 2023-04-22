@@ -33,15 +33,15 @@ class Chatbot():
     #FONCTIONS ATTRIBUS
     @property
     def user_messages(self):
-        return [x.content for x in self._messages if type(x) == "human"]
+        return [x["content"] for x in self._messages if x["role"] == "user"]
 
     @property
     def assistant_messages(self):
-        return [x.content for x in self._messages if type(x) == "ai"]
+        return [x["content"] for x in self._messages if x["role"] == "assistant"]
 
     @property
     def all_messages(self):
-        return [x.content for x in self._messages if type(x) != "system"]
+        return [x["content"] for x in self._messages if x["role"] != "system"]
 
     #FONCTIONS GETSETADD
     def set_system_prompt(self, prompt:str)->None:
