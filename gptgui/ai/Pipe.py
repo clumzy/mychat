@@ -38,9 +38,11 @@ class WitPipe():
             try:
                 location = outcome["entities"]["wit$location:location"][0]["value"]
             except KeyError: location = "Paris"
+            print(date)
             client = MeteoFranceClient()
             list_places = client.search_places(location)
             my_place = list_places[0]
+            print(my_place)
             my_place_weather_forecast = client.get_forecast_for_place(my_place)
             today = datetime.now()
             if date != "None":
@@ -50,7 +52,10 @@ class WitPipe():
             diff = date-today
             print(diff.days)
             my_place_daily_forecast = my_place_weather_forecast.daily_forecast
-            package = my_place_daily_forecast[diff.days]
+            if diff.days < 15:
+                package = my_place_daily_forecast[diff.days]
+            else:
+                package = "Impossible de donner une prédiction météo au delà de 15 jours. Veuillez-en informer l'utilisateur."
             return str(package)
 
     
