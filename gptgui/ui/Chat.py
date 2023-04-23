@@ -3,13 +3,13 @@ import customtkinter
 import threading
 
 from .Message import AssistantMessage, UserMessage
-from ..ai.Pipe import WikiPipe
+from ..ai.Pipe import WitPipe
 
 class Chat(customtkinter.CTkScrollableFrame):
     def __init__(
             self, 
             master:customtkinter.CTkFrame,
-            pipe:WikiPipe,
+            pipe:WitPipe,
             button_callback: customtkinter.CTkButton, 
             *args,):
         super().__init__(master=master,*args)
@@ -18,7 +18,7 @@ class Chat(customtkinter.CTkScrollableFrame):
         self._master.grid_columnconfigure((0), weight=1)
         self._master.grid_rowconfigure((0), weight=1)
         self._message_boxes = []
-        self.pipe:WikiPipe = pipe
+        self.pipe:WitPipe = pipe
         self._button_callback = button_callback
         #CALLBACK POUR CHANGER L'AFFICHAGE DES TOKENS AU CHANGMENT D'ONGLET
         self.bind("<Visibility>", self._update_token_use)
