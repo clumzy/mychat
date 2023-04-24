@@ -18,7 +18,7 @@ class WeatherService():
         except KeyError: self._location = "Paris"
         pass
 
-    def get_weather_package(self,):
+    def get_package(self,):
         list_places = self._client.search_places(self._location)
         my_place = list_places[0]
         my_place_weather_forecast = self._client.get_forecast_for_place(my_place)
@@ -26,6 +26,7 @@ class WeatherService():
         my_place_daily_forecast = my_place_weather_forecast.daily_forecast
         if diff.days < 15:
             package = my_place_daily_forecast[diff.days]
+            package["dt"] = self._date.strftime("%A %d/%m/%Y")
         else:
             package = "Impossible de donner une prédiction météo au delà de 15 jours. Veuillez-en informer l'utilisateur."
         return str(package)

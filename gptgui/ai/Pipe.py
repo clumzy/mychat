@@ -24,14 +24,13 @@ class WitPipe():
         elif outcome["intents"][0]["name"] == "get_meteo":
             print("meteo")
             meteo = WeatherService(outcome=outcome,)
-            return meteo.get_weather_package()
+            return meteo.get_package()
 
-    def _memory_upload(self, memory_package:str):
+    def _thought_upload(self, memory_package:str):
         upload = (
             "[UPLOAD MEMOIRE EN COURS]\n"
             +memory_package
-            +"\n[UPLOAD MEMOIRE TERMINE]"
-        )
+            +"\n[UPLOAD MEMOIRE TERMINE]")
         print(upload)
         self._mind_bot.add_assistant_answer(upload)
     
@@ -43,5 +42,5 @@ class WitPipe():
         print(dumps(outcome, indent=2))
         knowledge_package = self._flow(outcome)
         if knowledge_package:
-            self._memory_upload(knowledge_package)
+            self._thought_upload(knowledge_package)
         return self._mind_bot.return_answer()
