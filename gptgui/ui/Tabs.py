@@ -1,7 +1,7 @@
 import customtkinter
 
 from .Chat import Chat
-from ..ai.Pipe import WitPipe
+from ..ai.pipes.WitPipe import WitPipe
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

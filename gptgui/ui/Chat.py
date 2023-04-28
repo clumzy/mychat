@@ -3,7 +3,7 @@ import customtkinter
 import threading
 
 from .Message import AssistantMessage, UserMessage
-from ..ai.Pipe import WitPipe
+from ..ai.pipes.WitPipe import WitPipe
 
 class Chat(customtkinter.CTkScrollableFrame):
     def __init__(
@@ -50,7 +50,6 @@ class Chat(customtkinter.CTkScrollableFrame):
     def pull_response(self):
         answer_thread = threading.Thread(target=self._thread_pull_response, args=())
         answer_thread.start()
-
     def _thread_pull_response(self, ):
         response = self.pipe.return_answer()
         self.draw_assistant_message(response)

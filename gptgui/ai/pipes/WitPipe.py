@@ -3,7 +3,7 @@ from json import dumps
 
 import os
 
-from .Chatbot import Chatbot
+from ..Chatbot import Chatbot
 from ..services.WeatherService import WeatherService
 
 class WitPipe():
