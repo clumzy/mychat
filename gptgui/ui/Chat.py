@@ -2,7 +2,7 @@ import customtkinter
 
 import threading
 
-from .Message import AssistantMessage, UserMessage
+from .Message import AssistantMessage, UserMessage, SystemMessage
 from ..ai.pipes.WitPipe import WitPipe
 
 class Chat(customtkinter.CTkScrollableFrame):
@@ -23,8 +23,9 @@ class Chat(customtkinter.CTkScrollableFrame):
         #CALLBACK POUR CHANGER L'AFFICHAGE DES TOKENS AU CHANGMENT D'ONGLET
         self.bind("<Visibility>", self._update_token_use)
 
-    def _draw_message(self, text:str, assistant=False):
-        if assistant: message = AssistantMessage(self, text)
+    def _draw_message(self, text:str, role:str="user"):
+        if role=="assistant": message = AssistantMessage(self, text)
+        elif role=="system": message = SystemMessage(self, text)
         else: message = UserMessage(self, text)
         self._message_boxes.append(message)
         message.grid(
@@ -36,10 +37,13 @@ class Chat(customtkinter.CTkScrollableFrame):
         self.grid_columnconfigure(0, weight=1)
 
     def draw_assistant_message(self, message:str):
-        self._draw_message(message, assistant=True)
+        self._draw_message(message, role="assistant")
 
     def draw_user_message(self, message:str):
-        self._draw_message(message, assistant=False)
+        self._draw_message(message, role="user")
+
+    def draw_system_message(self, message:str):
+        self._draw_message(message, role="system")
 
     def push_message(self, message: str,) -> None:
         self.draw_user_message(message)
@@ -49,6 +53,7 @@ class Chat(customtkinter.CTkScrollableFrame):
 
     def pull_response(self):
         answer_thread = threading.Thread(target=self._thread_pull_response, args=())
+        answer_thread.setDaemon(True)
         answer_thread.start()
     def _thread_pull_response(self, ):
         response = self.pipe.return_answer()

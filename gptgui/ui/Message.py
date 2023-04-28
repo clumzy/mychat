@@ -38,3 +38,10 @@ class UserMessage(Message):
         self.configure(
             fg_color="#eeeebb",
             text_color="#111111")
+        
+class SystemMessage(Message):
+    def __init__(self, master:"Chat", text:str,*args,):
+        super().__init__(master=master, text=text, * args)
+        self.configure(
+            fg_color="#bbbbee",
+            text_color="#fafafaf")

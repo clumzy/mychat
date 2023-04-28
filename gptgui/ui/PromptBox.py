@@ -1,4 +1,5 @@
 import customtkinter
+from tkinterdnd2 import DND_ALL
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -71,7 +72,9 @@ class PromptBox(customtkinter.CTkFrame):
             sticky = "ew",
             padx = (5,0),
             pady = (0,5))
+        self.prompt.drop_target_register(DND_ALL) #type: ignore
         self.prompt.bind("<Control-Return>",self.callback_send)
+        self.prompt.dnd_bind("<<Drop>>", self.callback_drop) #type: ignore
 
     def callback_send(self, *args):
         msg = self.prompt.get(0.0,4096.4096)
@@ -83,6 +86,9 @@ class PromptBox(customtkinter.CTkFrame):
             self.master.tabs_ui.current_tab.pull_response()
         return 'break' #POUR EVITER QUE LE BOUTTON ENTREE SAUTE LA LIGNE
 
+    def callback_drop(self, event, *args):
+        print(event.data)
+    
     def callback_newtab(self):
         self.master.tabs_ui.create_chat()
 
