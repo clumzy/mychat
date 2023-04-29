@@ -30,14 +30,23 @@ class WitPipe():
             if self.last_sys_message != None:
                 blip = BLIPService(
                     outcome=outcome,
-                    img_path=self.last_sys_message.get(0.0,4096.4096).split("\n")[0])
+                    img_path=self.last_sys_message.get(0.0,4096.4096).split("\n")[0],
+                    )
+                return blip.get_package()
+        elif outcome["intents"][0]["name"] == "get_image_answer":
+            if self.last_sys_message != None:
+                blip = BLIPService(
+                    outcome=outcome,
+                    img_path=self.last_sys_message.get(0.0,4096.4096).split("\n")[0],
+                    query=self._mind_bot.user_messages[-1]
+                    )
                 return blip.get_package()
 
     def _thought_upload(self, memory_package:str):
         upload = (
-            "[UPLOAD MEMOIRE EN COURS]\n"
+            "[UPLOAD EN COURS]\n"
             +memory_package
-            +"\n[UPLOAD MEMOIRE TERMINE]")
+            +"\n[UPLOAD TERMINE]")
         print(upload)
         self._mind_bot.add_assistant_answer(upload)
     

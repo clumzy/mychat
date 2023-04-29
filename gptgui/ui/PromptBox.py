@@ -88,6 +88,8 @@ class PromptBox(customtkinter.CTkFrame):
 
     def callback_drop(self, event, *args):
         self.master.tabs_ui.current_tab.draw_system_message(event.data)
+        self.update()
+        self.master.tabs_ui.current_tab._parent_canvas.yview_moveto(1.0)
     
     def callback_newtab(self):
         self.master.tabs_ui.create_chat()
