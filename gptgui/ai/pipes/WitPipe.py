@@ -4,14 +4,15 @@ from json import dumps
 import os
 
 from ..Chatbot import Chatbot
-from ..services.WeatherService import WeatherService
+from ..services import WeatherService, BLIPService
+from ...ui.Message import SystemMessage
 
 class WitPipe():
-    def __init__(self,):
-        prompt_path = "/Users/george.pied/Code/clumzy/mychat/prompting/"
+    def __init__(self, prompt_path:str):
         self._mind_bot= Chatbot(
             sys_prompt=os.path.join(prompt_path,"sysprompt.txt"))
         self._wit = Wit("7ZDABHS6FCZTN5LL753LOCGTI7HAOBZW")
+        self.last_sys_message:None|SystemMessage = None
     
     @property
     def token_use(self):
@@ -25,6 +26,12 @@ class WitPipe():
             print("meteo")
             meteo = WeatherService(outcome=outcome,)
             return meteo.get_package()
+        elif outcome["intents"][0]["name"] == "get_image_description":
+            if self.last_sys_message != None:
+                blip = BLIPService(
+                    outcome=outcome,
+                    img_path=self.last_sys_message.get(0.0,4096.4096).split("\n")[0])
+                return blip.get_package()
 
     def _thought_upload(self, memory_package:str):
         upload = (

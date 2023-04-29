@@ -39,7 +39,9 @@ class Tabs(customtkinter.CTkTabview):
         self.add(tab_name)
         self._tabs[tab_name] = Chat(
             master=self.tab(tab_name),
-            pipe=WitPipe(),
+            pipe=WitPipe(
+                prompt_path="/Users/george.pied/Code/clumzy/mychat/prompting/"
+                ),
             button_callback = self._token_button)
         if goto: self.set(tab_name)
 

@@ -44,4 +44,4 @@ class SystemMessage(Message):
         super().__init__(master=master, text=text, * args)
         self.configure(
             fg_color="#bbbbee",
-            text_color="#fafafaf")
+            text_color="#fafafa")

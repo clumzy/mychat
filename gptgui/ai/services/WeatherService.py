@@ -3,9 +3,9 @@ from datetime import datetime
 
 class WeatherService():
     def __init__(self, outcome:dict, default_city:str = "Paris") -> None:
+        self._outcome = outcome
         self._today = datetime.now()
         self._client = MeteoFranceClient()
-        self._outcome = outcome
         self._default_city = default_city
         try:
             wit_date_string = self._outcome["entities"]["wit$datetime:datetime"][0]["value"]
@@ -27,6 +27,10 @@ class WeatherService():
         if diff.days < 15:
             package = my_place_daily_forecast[diff.days]
             package["dt"] = self._date.strftime("%A %d/%m/%Y")
+            package["sun"]["rise"] = datetime.fromtimestamp(
+                package["sun"]["rise"]).strftime("%H:%M")
+            package["sun"]["set"] = datetime.fromtimestamp(
+                package["sun"]["set"]).strftime("%H:%M")
         else:
             package = "Impossible de donner une prédiction météo au delà de 15 jours. Veuillez-en informer l'utilisateur."
         return str(package)

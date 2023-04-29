@@ -87,7 +87,6 @@ class PromptBox(customtkinter.CTkFrame):
         return 'break' #POUR EVITER QUE LE BOUTTON ENTREE SAUTE LA LIGNE
 
     def callback_drop(self, event, *args):
-        print(event.data)
         self.master.tabs_ui.current_tab.draw_system_message(event.data)
     
     def callback_newtab(self):

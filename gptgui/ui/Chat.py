@@ -44,6 +44,7 @@ class Chat(customtkinter.CTkScrollableFrame):
 
     def draw_system_message(self, message:str):
         self._draw_message(message, role="system")
+        self.pipe.last_sys_message = self._message_boxes[-1]
 
     def push_message(self, message: str,) -> None:
         self.draw_user_message(message)
