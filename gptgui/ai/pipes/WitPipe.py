@@ -4,7 +4,7 @@ from json import dumps
 import os
 
 from ..Chatbot import Chatbot
-from ..services import WeatherService, BLIPService
+from ..services import WeatherService, BLIPService, MemoryService
 from ...ui.Message import SystemMessage
 
 class WitPipe():
@@ -41,7 +41,11 @@ class WitPipe():
                     query=self._mind_bot.user_messages[-1]
                     )
                 return blip.get_package()
-
+        elif outcome["intents"][0]["name"] == "store_memory":
+            memory = MemoryService(location="/Users/george.pied/Code/clumzy/mychat/memories")
+            memory.save_memory(outcome["entities"]["wit$reminder:reminder"][0]["value"])
+            return None
+        
     def _thought_upload(self, memory_package:str):
         upload = (
             "[UPLOAD EN COURS]\n"
@@ -54,9 +58,14 @@ class WitPipe():
         self._mind_bot.add_user_prompt(prompt)
 
     def return_answer(self):
-        outcome = self._wit.message(self._mind_bot.user_messages[-1], verbose=True)
-        print(dumps(outcome, indent=2))
-        knowledge_package = self._flow(outcome)
-        if knowledge_package:
-            self._thought_upload(knowledge_package)
+        memories = MemoryService("/Users/george.pied/Code/clumzy/mychat/memories")
+        self._thought_upload(memories.load_memory(self._mind_bot.user_messages[-1]))
+        #CONDITION SI LE MESSAGE FAIT MOINS DE 280
+        if len(self._mind_bot.user_messages[-1])<280:
+            outcome = self._wit.message(self._mind_bot.user_messages[-1], verbose=True)
+            print(dumps(outcome, indent=2))
+            knowledge_package = self._flow(outcome)
+            if knowledge_package:
+                self._thought_upload(knowledge_package)
+        else: print("Message is too long. Go below 280 characters.")
         return self._mind_bot.return_answer()
