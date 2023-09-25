@@ -7,7 +7,6 @@ class BLIPService():
     def __init__(self, outcome:dict, img_path:str, query:str|None=None) -> None:
         self._translator = deepl.Translator(
             auth_key=os.environ.get("DEEPL_API_TOKEN")) # type: ignore
-        print(os.environ.get("DEEPL_API_TOKEN"))
         self._outcome = outcome
         self._img_path = img_path
         self._query = query
