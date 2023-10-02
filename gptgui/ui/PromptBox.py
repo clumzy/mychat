@@ -47,7 +47,7 @@ class PromptBox(customtkinter.CTkFrame):
         #SUPPRIMER CONV
         self.delete_button = customtkinter.CTkButton(
             master=self,
-            height=20, 
+            height=20,
             width=35, 
             command=self.callback_deltab, 
             text="X",
