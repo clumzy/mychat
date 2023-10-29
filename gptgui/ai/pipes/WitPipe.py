@@ -44,14 +44,11 @@ class WitPipe():
                     query=self._mind_bot.user_messages[-1]
                     )
                 return blip.get_package()
-        elif outcome["intents"][0]["name"] == "store_memory":
-            self._memory.save_memory(outcome["entities"]["wit$reminder:reminder"][0]["value"])
-            return None
         
-    def _thought_upload(self, memory_package:str):
+    def _thought_upload(self, package:str):
         upload = (
             "[UPLOAD EN COURS]\n"
-            +memory_package
+            +package
             +"\n[UPLOAD TERMINE]")
         print(upload)
         self._mind_bot.add_assistant_answer(upload)
@@ -60,10 +57,6 @@ class WitPipe():
         self._mind_bot.add_user_prompt(prompt)
 
     def return_answer(self):
-        if len(self._memory)>0:
-            memory_package = self._memory.load_memory(self._mind_bot.user_messages[-1])
-            if len(memory_package)>0:
-                for mem in memory_package: self._thought_upload(str(mem))
         #CONDITION SI LE MESSAGE FAIT MOINS DE 280
         if len(self._mind_bot.user_messages[-1])<280:
             outcome = self._wit.message(self._mind_bot.user_messages[-1], verbose=True)
