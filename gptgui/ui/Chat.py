@@ -3,7 +3,7 @@ import customtkinter
 import threading
 
 from .Message import AssistantMessage, UserMessage, SystemMessage
-from ..ai.pipes.WitPipe import WitPipe
+from ..ai.pipes import WitPipe
 
 class Chat(customtkinter.CTkScrollableFrame):
     def __init__(

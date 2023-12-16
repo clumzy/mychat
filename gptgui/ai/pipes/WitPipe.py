@@ -3,16 +3,19 @@ from json import dumps
 
 import os
 
-from ..Chatbot import Chatbot
-from ..services import WeatherService, BLIPService, MemoryService
-from ...ui.Message import SystemMessage
+from ...ai import Chatbot, Memory
+from ..services import WeatherService, BLIPService
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from ...ui import SystemMessage
 
 class WitPipe():
-    def __init__(self, prompt_path:str):
+    def __init__(self, prompt_path:str, memory:Memory):
         self._mind_bot= Chatbot(
             sys_prompt=os.path.join(prompt_path,"sysprompt.txt"))
         self._wit = Wit("7ZDABHS6FCZTN5LL753LOCGTI7HAOBZW")
-        self.last_sys_message:None|SystemMessage = None
+        self._memory = memory
+        self.last_sys_message:None|"SystemMessage" = None
     
     @property
     def token_use(self):
@@ -41,15 +44,11 @@ class WitPipe():
                     query=self._mind_bot.user_messages[-1]
                     )
                 return blip.get_package()
-        elif outcome["intents"][0]["name"] == "store_memory":
-            memory = MemoryService(location="/Users/george.pied/Code/clumzy/mychat/memories")
-            memory.save_memory(outcome["entities"]["wit$reminder:reminder"][0]["value"])
-            return None
         
-    def _thought_upload(self, memory_package:str):
+    def _thought_upload(self, package:str):
         upload = (
             "[UPLOAD EN COURS]\n"
-            +memory_package
+            +package
             +"\n[UPLOAD TERMINE]")
         print(upload)
         self._mind_bot.add_assistant_answer(upload)
@@ -58,8 +57,6 @@ class WitPipe():
         self._mind_bot.add_user_prompt(prompt)
 
     def return_answer(self):
-        memories = MemoryService("/Users/george.pied/Code/clumzy/mychat/memories")
-        self._thought_upload(memories.load_memory(self._mind_bot.user_messages[-1]))
         #CONDITION SI LE MESSAGE FAIT MOINS DE 280
         if len(self._mind_bot.user_messages[-1])<280:
             outcome = self._wit.message(self._mind_bot.user_messages[-1], verbose=True)

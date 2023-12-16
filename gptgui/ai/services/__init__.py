@@ -1,3 +1,2 @@
-from .BLIPService import *
-from .WeatherService import *
-from .MemoryService import *
+from .BLIPService import BLIPService
+from .WeatherService import WeatherService
